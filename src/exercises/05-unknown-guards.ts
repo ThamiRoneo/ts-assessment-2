@@ -48,10 +48,11 @@ export function parseUser(value: unknown): User | null {
 // TODO
 export function toInt(value: string | number): number {
     // TODO
-    return typeof value === "number" ? value : Number(value);
-    if (NaN) {
+    const result = typeof value === "number" ? value : Number(value);
+    if (isNaN(result)) {
         throw new Error("Invalid number");
     }
+    return result;
 }
 
 // These run in the test harness:
