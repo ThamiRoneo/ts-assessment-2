@@ -21,7 +21,10 @@ export type FetchState<T> =
  */
 
 // TODO: define Action<T> as a discriminated union of the four shapes
-export type Action<T> = ___;
+export type Action<T> = { type: "FETCH" } |
+  { type: "RESOLVE"; data: T } |
+  { type: "REJECT"; error: string } |
+  { type: "RESET" };
 
 /* ---- 6b. The reducer ----
  * Given the current state and an action, return the next state:
@@ -34,12 +37,22 @@ export type Action<T> = ___;
 
 export function reducer<T>(_state: FetchState<T>, action: Action<T>): FetchState<T> {
   switch (action.type) {
-    // TODO: FETCH
-    // TODO: RESOLVE
-    // TODO: REJECT
-    // TODO: RESET
-    default: {
-      // TODO: const _exhaustive: never = action; throw ...
+      // TODO: FETCH
+      case "FETCH":
+          return { status: "loading" };
+      // TODO: RESOLVE
+      case "RESOLVE":
+        return { status: "success", data: action.data };
+      // TODO: REJECT
+      case "REJECT":
+        return { status: "error", message: action.error };
+      // TODO: RESET
+      case "RESET":
+        return { status: "idle" };
+      default: {
+          // TODO: const _exhaustive: never = action; throw ...
+            const _exhaustive: never = action;
+            throw new Error(`Unhandled action: ${_exhaustive}`);
     }
   }
 }
