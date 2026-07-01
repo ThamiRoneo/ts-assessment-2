@@ -18,9 +18,17 @@
  */
 
 // TODO: define CartItem
-export type CartItem = ___;
+export type CartItem = {
+    productId: number;
+    name: string;
+    unitPrice: number;
+    quantity: number; // >= 1
+};
 // TODO: define Cart
-export type Cart = ___;
+export type Cart = {
+    items: CartItem[];
+    currency: "ZAR" | "USD";
+};
 
 /* ---- 10b. Operations (all PURE — never mutate the input cart) ---- */
 
@@ -28,19 +36,39 @@ export type Cart = ___;
 // quantity; otherwise append the new item. Returns a NEW cart.
 // TODO
 export function addItem(cart: Cart, item: CartItem): Cart {
-  // TODO
+    // TODO
+    const existingItem = cart.items.find((i) => i.productId === item.productId);
+    if (existingItem) {
+        return {
+            ...cart,
+            items: cart.items.map((i) =>
+                i.productId === item.productId
+                    ? { ...i, quantity: i.quantity + item.quantity }
+                    : i
+            ),
+        };
+    }
+    return {
+        ...cart,
+        items: [...cart.items, item],
+    };
 }
 
 // removeItem: return a new cart with the given productId removed.
 // TODO
 export function removeItem(cart: Cart, productId: number): Cart {
-  // TODO
+    // TODO
+    return {
+        ...cart,
+        items: cart.items.filter((i) => i.productId !== productId),
+    };
 }
 
 // subtotal: sum of unitPrice * quantity across all items.
 // TODO: returns number
 export function subtotal(cart: Cart): number {
-  // TODO
+    // TODO
+    return cart.items.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
 }
 
 // applyDiscount: takes a cart and a discount rate 0..1 and returns the
@@ -48,7 +76,11 @@ export function subtotal(cart: Cart): number {
 // the range 0..1.
 // TODO: returns number
 export function applyDiscount(cart: Cart, rate: number): number {
-  // TODO
+    // TODO
+    if (rate < 0 || rate > 1) {
+        throw new Error("Discount rate must be between 0 and 1");
+    }
+    return subtotal(cart) * (1 - rate);
 }
 
 /* ---- 10c. Sample data (must satisfy your types) ---- */
